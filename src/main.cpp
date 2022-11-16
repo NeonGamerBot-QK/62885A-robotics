@@ -35,6 +35,7 @@ brain Brain;
 
 
 // Robot configuration code.
+// 6_1 = red
 motor Motor2 = motor(PORT2, ratio18_1, false);
 motor Motor3 = motor(PORT3, ratio18_1, false);
 motor FlywheelMotor1 = motor(PORT4, ratio36_1, true);
@@ -101,7 +102,7 @@ int timesPressed = 0;
 void buttonPress(){
     timesPressed++;//add one to timesPressed
     // Controller.Screen.clearScreen();
-    FlywheelMotor3.spin(forward, 60.0, volt);
+    FlywheelMotor3.spin(reverse, 60.0, volt);
     FlywheelMotor1.spin(reverse, 60.0, volt);
     FlywheelMotor2.spin(forward, 60.0, volt);
 
