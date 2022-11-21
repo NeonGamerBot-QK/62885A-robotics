@@ -237,6 +237,7 @@ int main()
   // //   Drivetrain.turnFor(left, 45, degrees);
   // //   Drivetrain.driveFor(forward, 3, inches);
   // //   Drivetrain.stop();
+  // pros::lcd::set_text(1, "[i] Ready to rumble!");
   //? Run the pre-autonomous function.
   pre_auton();
 
