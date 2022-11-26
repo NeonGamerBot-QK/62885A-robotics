@@ -167,7 +167,7 @@
       }
     },
     "upload_options": {
-      "icon": "robot",
+      "icon": "X",
       "after": "run",
       "description": "62885A"
     }

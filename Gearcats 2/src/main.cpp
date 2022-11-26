@@ -1,4 +1,11 @@
+/**
+ * @note read the README.md and for bugs that should not exist read BUGS.md
+*/
+
+//@ignore this error its werid
 #include "main.h"
+#include "other.h"
+
 // * define the motor ports here
 #define CONTROLLER_PORT  21
 #define RIGHT_FLYWHEEL_PORT  5;
@@ -12,7 +19,8 @@ pros::Controller master (pros::E_CONTROLLER_MASTER);
  #define BUTTON(x)  if (master.get_digital_new_press(x)) 
 #define HELD(x)  if (master.get_digital(x)) 
 
-
+bool isDevelopment = false;
+bool isProd = false;
 
 
 
@@ -42,7 +50,10 @@ void on_a_button() {
  */
 void initialize() {
 	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Hello PROS User!");
+	// pros::lcd::set_background_color(COLOR_GOLD);
+	pros::lcd::print(4, "disabled = false");
+	pros::lcd::print(1, "battery temp:  %d, battery \% %d", pros::battery::get_temperature(), pros::battery::get_voltage()); 
+
 	// //  pros::lcd::register_btn1_cb(on_center_button);
 }
 
@@ -52,7 +63,7 @@ void initialize() {
  * the robot is enabled, this task will exit.
  */
 void disabled() {
-	pros::lcd::print(1, "Disabled");
+	pros::lcd::print(4, "Disabled = true");
 }
 
 /**
@@ -64,7 +75,9 @@ void disabled() {
  * This task will exit when the robot is enabled and autonomous or opcontrol
  * starts.
  */
-void competition_initialize() {}
+void competition_initialize() {
+pros::lcd::print(3, "Competition init");
+}
 
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -96,30 +109,32 @@ void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
 	pros::Motor left_mtr(1);
 	pros::Motor right_mtr(2);
-
-HELD(pros::E_CONTROLLER_DIGITAL_A) {
-	FLYWHEEL_MIDDLE.move(100);
-	pros::delay(2);
-}
 	while (true) {
+		
+		pros::lcd::print(2, "%d center = %d", pros::lcd::read_buttons(), LCD_BTN_CENTER);
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
 		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
 		int left = master.get_analog(ANALOG_LEFT_Y);
 		int right = master.get_analog(ANALOG_RIGHT_Y);
-
+// LCDButtonPress(pros::lcd::read_buttons(), isDevelopment, isProd);
+// if(!isDevelopment && !isProd) {
+// // pros::delay(20);
+// 	return;
+// } else if (isProd && !isDevelopment) {
 		left_mtr = left;
 		right_mtr = right;
   if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
       // Toggle pneumatics or other similar actions
-	FLYWHEEL_MIDDLE.move(127);
-	FLYWHEEL_LEFT.move(127);
-	FLYWHEEL_RIGHT.move(127);
+	ButtonAPress(FLYWHEEL_LEFT, FLYWHEEL_RIGHT, FLYWHEEL_MIDDLE);
     } else {
 		FLYWHEEL_MIDDLE.brake();
 FLYWHEEL_LEFT.brake();
 FLYWHEEL_RIGHT.brake();
 	}
+// } else if(isDevelopment && !isProd) {
+// 	//dev code here
+// }
 		pros::delay(20);
 	}
 }
