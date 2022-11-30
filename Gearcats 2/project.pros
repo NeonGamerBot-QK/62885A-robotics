@@ -168,7 +168,7 @@
     },
     "upload_options": {
       "icon": "X",
-      "after": "run",
+      "after": "screen",
       "description": "62885A"
     }
   }
