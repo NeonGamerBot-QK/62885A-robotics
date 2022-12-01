@@ -5,6 +5,8 @@
 //@ignore this error its werid
 #include "main.h"
 #include "other.h"
+#include "pros/adi.h"
+#include "pros/adi.hpp"
 
 // * define the motor ports here
 #define CONTROLLER_PORT  21
@@ -15,7 +17,7 @@
  pros::Motor FLYWHEEL_LEFT (4, false);
  pros::Motor FLYWHEEL_RIGHT (5, true);
 pros::Controller master (pros::E_CONTROLLER_MASTER);
-
+  pros::ADIDigitalOut  Piston ('A');
  #define BUTTON(x)  if (master.get_digital_new_press(x)) 
 #define HELD(x)  if (master.get_digital(x)) 
 
@@ -131,6 +133,9 @@ void opcontrol() {
 		FLYWHEEL_MIDDLE.brake();
 FLYWHEEL_LEFT.brake();
 FLYWHEEL_RIGHT.brake();
+	}
+	if(master.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
+		ButtonBPress(Piston);
 	}
 // } else if(isDevelopment && !isProd) {
 // 	//dev code here
