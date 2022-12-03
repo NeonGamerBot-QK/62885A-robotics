@@ -1,6 +1,6 @@
 /**
  * @note read the README.md and for bugs that should not exist read BUGS.md
-*/
+ */
 
 //@ignore this error its werid
 #include "main.h"
@@ -9,22 +9,20 @@
 #include "pros/adi.hpp"
 
 // * define the motor ports here
-#define CONTROLLER_PORT  21
-#define RIGHT_FLYWHEEL_PORT  5;
-#define LEFT_FLYWHEEL_PORT  4;
-#define MIDDLE_FLYWHEEL_PORT  7;
- pros::Motor FLYWHEEL_MIDDLE (7, false);
- pros::Motor FLYWHEEL_LEFT (4, false);
- pros::Motor FLYWHEEL_RIGHT (5, true);
-pros::Controller master (pros::E_CONTROLLER_MASTER);
-  pros::ADIDigitalOut  Piston ('A');
- #define BUTTON(x)  if (master.get_digital_new_press(x)) 
-#define HELD(x)  if (master.get_digital(x)) 
+#define CONTROLLER_PORT 21
+#define RIGHT_FLYWHEEL_PORT 5;
+#define LEFT_FLYWHEEL_PORT 4;
+#define MIDDLE_FLYWHEEL_PORT 7;
+pros::Motor FLYWHEEL_MIDDLE(7, false);
+pros::Motor FLYWHEEL_LEFT(4, false);
+pros::Motor FLYWHEEL_RIGHT(5, true);
+pros::Controller master(pros::E_CONTROLLER_MASTER);
+pros::ADIDigitalOut Piston('A');
+#define BUTTON(x) if (master.get_digital_new_press(x))
+#define HELD(x) if (master.get_digital(x))
 
 bool isDevelopment = false;
 bool isProd = false;
-
-
 
 /**
  * * A callback function for LLEMU's center button.
@@ -33,16 +31,13 @@ bool isProd = false;
  * * "I was pressed!" and nothing.
  */
 void on_center_button() {
-	static bool pressed = false;
-	pressed = !pressed;
-	if (pressed) {
-		pros::lcd::set_text(2, "I was pressed!");
-	} else {
-		pros::lcd::clear_line(2);
-	}
-}
-void on_a_button() {
-
+  static bool pressed = false;
+  pressed = !pressed;
+  if (pressed) {
+    pros::lcd::set_text(2, "I was pressed!");
+  } else {
+    pros::lcd::clear_line(2);
+  }
 }
 /**
  * * Runs initialization code. This occurs as soon as the program is started.
@@ -51,12 +46,14 @@ void on_a_button() {
  * ! to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-	pros::lcd::initialize();
-	// pros::lcd::set_background_color(COLOR_GOLD);
-	pros::lcd::print(4, "disabled = false");
-	pros::lcd::print(1, "battery temp:  %d, battery \% %d", pros::battery::get_temperature(), pros::battery::get_voltage()); 
+  pros::lcd::initialize();
+  // pros::lcd::set_background_color(COLOR_GOLD);
+  pros::lcd::print(4, "disabled = false");
+  pros::lcd::print(1, "battery temp:  %d, battery \% %d",
+                   pros::battery::get_temperature(),
+                   pros::battery::get_voltage());
 
-	// //  pros::lcd::register_btn1_cb(on_center_button);
+  // //  pros::lcd::register_btn1_cb(on_center_button);
 }
 
 /**
@@ -64,9 +61,7 @@ void initialize() {
  * the VEX Competition Switch, following either autonomous or opcontrol. When
  * the robot is enabled, this task will exit.
  */
-void disabled() {
-	pros::lcd::print(4, "Disabled = true");
-}
+void disabled() { pros::lcd::print(4, "Disabled = true"); }
 
 /**
  * Runs after initialize(), and before autonomous when connected to the Field
@@ -77,9 +72,7 @@ void disabled() {
  * This task will exit when the robot is enabled and autonomous or opcontrol
  * starts.
  */
-void competition_initialize() {
-pros::lcd::print(3, "Competition init");
-}
+void competition_initialize() { pros::lcd::print(3, "Competition init"); }
 
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -108,38 +101,36 @@ void autonomous() {}
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-	pros::Controller master(pros::E_CONTROLLER_MASTER);
-	pros::Motor left_mtr(1, true);
-	pros::Motor right_mtr(2);
-	while (true) {
-		
-		pros::lcd::print(2, "%d center = %d", pros::lcd::read_buttons(), LCD_BTN_CENTER);
-		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
-		int left = master.get_analog(ANALOG_LEFT_Y);
-		int right = master.get_analog(ANALOG_RIGHT_Y);
-// LCDButtonPress(pros::lcd::read_buttons(), isDevelopment, isProd);
-// if(!isDevelopment && !isProd) {
-// // pros::delay(20);
-// 	return;
-// } else if (isProd && !isDevelopment) {
-		left_mtr = left;
-		right_mtr = right;
-  if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
+  pros::Controller master(pros::E_CONTROLLER_MASTER);
+  pros::Motor left_mtr(1, true);
+  pros::Motor right_mtr(2);
+  while (true) {
+
+    pros::lcd::print(2, "%d center = %d", pros::lcd::read_buttons(),
+                     LCD_BTN_CENTER);
+    int left = master.get_analog(ANALOG_LEFT_Y);
+    int right = master.get_analog(ANALOG_RIGHT_Y);
+    // LCDButtonPress(pros::lcd::read_buttons(), isDevelopment, isProd);
+    // if(!isDevelopment && !isProd) {
+    // // pros::delay(20);
+    // 	return;
+    // } else if (isProd && !isDevelopment) {
+    left_mtr = left;
+    right_mtr = right;
+    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
       // Toggle pneumatics or other similar actions
-	ButtonAPress(FLYWHEEL_LEFT, FLYWHEEL_RIGHT, FLYWHEEL_MIDDLE);
+      ButtonAPress(FLYWHEEL_LEFT, FLYWHEEL_RIGHT, FLYWHEEL_MIDDLE);
     } else {
-		FLYWHEEL_MIDDLE.brake();
-FLYWHEEL_LEFT.brake();
-FLYWHEEL_RIGHT.brake();
-	}
-	if(master.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
-		ButtonBPress(Piston);
-	}
-// } else if(isDevelopment && !isProd) {
-// 	//dev code here
-// }
-		pros::delay(20);
-	}
+      FLYWHEEL_MIDDLE.brake();
+      FLYWHEEL_LEFT.brake();
+      FLYWHEEL_RIGHT.brake();
+    }
+    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
+      ButtonBPress(Piston);
+    }
+    // } else if(isDevelopment && !isProd) {
+    // 	//dev code here
+    // }
+    pros::delay(20);
+  }
 }

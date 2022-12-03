@@ -1,16 +1,16 @@
+#include "main.h"
 #include "other.h"
 #include <iostream>
-#include "main.h"
 
-void ButtonAPress( pros::Motor left,  pros::Motor right,  pros::Motor middle) {
-middle.move(127);
-	left.move(127);
-	right.move(127);
+void ButtonAPress(pros::Motor left, pros::Motor right, pros::Motor middle) {
+  middle.move(127);
+  left.move(127);
+  right.move(127);
 }
-void ButtonBPress(pros::ADIDigitalOut  piston) {
-	piston.set_value(true);
-	pros::delay(1000); 
-	piston.set_value(false);
+void ButtonBPress(pros::ADIDigitalOut piston) {
+  piston.set_value(true);
+  pros::delay(1000);
+  piston.set_value(false);
 }
 // // void development(bool isDevelopment, bool isProd) {
 // //     isDevelopment = true;
@@ -31,7 +31,7 @@ void ButtonBPress(pros::ADIDigitalOut  piston) {
 // //     case LCD_BTN_CENTER:
 // //     clear(isDevelopment, isProd);
 // //         break;
-// //     case LCD_BTN_RIGHT: 
+// //     case LCD_BTN_RIGHT:
 // // production(isDevelopment,isProd);
 // //     break;
 // //      case LCD_BTN_LEFT:

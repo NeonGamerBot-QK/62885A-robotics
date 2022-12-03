@@ -33,7 +33,6 @@ pros make
 
 👤 **Anya**
 
-* stuff here
 
 ## Show your support
 
