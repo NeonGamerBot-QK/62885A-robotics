@@ -4,18 +4,15 @@
 
 //@ignore this error its werid
 #include "main.h"
+#include "Puncher.h"
+#include "intake.h"
 #include "other.h"
 #include "pros/adi.h"
 #include "pros/adi.hpp"
 
 // * define the motor ports here
 #define CONTROLLER_PORT 21
-#define RIGHT_FLYWHEEL_PORT 5;
-#define LEFT_FLYWHEEL_PORT 4;
-#define MIDDLE_FLYWHEEL_PORT 7;
-pros::Motor FLYWHEEL_MIDDLE(7, false);
-pros::Motor FLYWHEEL_LEFT(4, false);
-pros::Motor FLYWHEEL_RIGHT(5, true);
+pros::Motor PUNCHER(10);
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::ADIDigitalOut Piston('A');
 #define BUTTON(x) if (master.get_digital_new_press(x))
@@ -119,11 +116,8 @@ void opcontrol() {
     right_mtr = right;
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
       // Toggle pneumatics or other similar actions
-      ButtonAPress(FLYWHEEL_LEFT, FLYWHEEL_RIGHT, FLYWHEEL_MIDDLE);
+      runPuncher(PUNCHER);
     } else {
-      FLYWHEEL_MIDDLE.brake();
-      FLYWHEEL_LEFT.brake();
-      FLYWHEEL_RIGHT.brake();
     }
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
       ButtonBPress(Piston);

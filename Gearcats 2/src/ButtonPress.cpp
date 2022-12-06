@@ -1,12 +1,7 @@
 #include "main.h"
 #include "other.h"
-#include <iostream>
 
-void ButtonAPress(pros::Motor left, pros::Motor right, pros::Motor middle) {
-  middle.move(127);
-  left.move(127);
-  right.move(127);
-}
+void ButtonAPress(pros::Motor left, pros::Motor right, pros::Motor middle) {}
 void ButtonBPress(pros::ADIDigitalOut piston) {
   piston.set_value(true);
   pros::delay(1000);
