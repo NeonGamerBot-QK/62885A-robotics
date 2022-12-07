@@ -9,6 +9,7 @@
 #include "other.h"
 #include "pros/adi.h"
 #include "pros/adi.hpp"
+#include "pros/rtos.hpp"
 
 // * define the motor ports here
 #define CONTROLLER_PORT 21
@@ -17,6 +18,8 @@ pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::ADIDigitalOut Piston('A');
 #define BUTTON(x) if (master.get_digital_new_press(x))
 #define HELD(x) if (master.get_digital(x))
+pros::Motor left_mtr(1, true);
+pros::Motor right_mtr(2);
 
 bool isDevelopment = false;
 bool isProd = false;
@@ -82,7 +85,13 @@ void competition_initialize() { pros::lcd::print(3, "Competition init"); }
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+void autonomous() {
+  left_mtr = 127;
+  right_mtr = 127;
+  pros::delay(1000);
+  left_mtr.brake();
+  right_mtr.brake();
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -99,8 +108,7 @@ void autonomous() {}
  */
 void opcontrol() {
   pros::Controller master(pros::E_CONTROLLER_MASTER);
-  pros::Motor left_mtr(1, true);
-  pros::Motor right_mtr(2);
+
   while (true) {
 
     pros::lcd::print(2, "%d center = %d", pros::lcd::read_buttons(),
@@ -121,6 +129,8 @@ void opcontrol() {
     }
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
       ButtonBPress(Piston);
+    } else {
+      Piston.set_value(true);
     }
     // } else if(isDevelopment && !isProd) {
     // 	//dev code here

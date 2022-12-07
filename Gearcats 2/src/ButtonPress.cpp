@@ -2,11 +2,7 @@
 #include "other.h"
 
 void ButtonAPress(pros::Motor left, pros::Motor right, pros::Motor middle) {}
-void ButtonBPress(pros::ADIDigitalOut piston) {
-  piston.set_value(true);
-  pros::delay(1000);
-  piston.set_value(false);
-}
+void ButtonBPress(pros::ADIDigitalOut piston) { piston.set_value(false); }
 // // void development(bool isDevelopment, bool isProd) {
 // //     isDevelopment = true;
 // //     isProd = false;
