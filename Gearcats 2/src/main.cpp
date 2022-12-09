@@ -14,6 +14,7 @@
 // * define the motor ports here
 #define CONTROLLER_PORT 21
 pros::Motor PUNCHER(10);
+pros::Motor Intake(13);
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::ADIDigitalOut Piston('A');
 #define BUTTON(x) if (master.get_digital_new_press(x))
@@ -86,11 +87,34 @@ void competition_initialize() { pros::lcd::print(3, "Competition init"); }
  * from where it left off.
  */
 void autonomous() {
+  /**
+   * @ref {https://content.vexrobotics.com/images/CompetitionV2/SpinUpField.jpg}
+   * @note Example img of field used for this code.
+   * * URL https://content.vexrobotics.com/images/CompetitionV2/SpinUpField.jpg
+   */
+  moveIntake(Intake);
   left_mtr = 127;
   right_mtr = 127;
   pros::delay(1000);
   left_mtr.brake();
   right_mtr.brake();
+  left_mtr = 120;
+  pros::delay(200);
+  left_mtr.brake();
+  left_mtr = 127;
+  right_mtr = 127;
+  pros::delay(1500);
+  left_mtr.brake();
+  right_mtr.brake();
+  left_mtr = 120;
+  pros::delay(500);
+  left_mtr.brake();
+  left_mtr = 127;
+  right_mtr = 127;
+  pros::delay(1500);
+  left_mtr.brake();
+  right_mtr.brake();
+  stopIntake(Intake);
 }
 
 /**
@@ -131,6 +155,9 @@ void opcontrol() {
       ButtonBPress(Piston);
     } else {
       Piston.set_value(true);
+    }
+    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X)) {
+      autonomous();
     }
     // } else if(isDevelopment && !isProd) {
     // 	//dev code here
