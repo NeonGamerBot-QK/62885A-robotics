@@ -5,23 +5,26 @@
 //@ignore this error its werid
 #include "main.h"
 #include "Puncher.h"
+#include "config.h"
 #include "intake.h"
 #include "other.h"
 #include "pros/adi.h"
 #include "pros/adi.hpp"
 #include "pros/misc.h"
 #include "pros/rtos.hpp"
-
-// * define the motor ports here
-#define CONTROLLER_PORT 21
-pros::Motor PUNCHER(10);
-pros::Motor Intake(13);
+pros::Motor Puncher(PUNCHER_PORT);
+pros::Motor Intake1(INTAKE_PORT1);
+pros::Motor Intake2(INTAKE_PORT2);
+pros::Motor Intake3(INTAKE_PORT3);
 pros::Controller master(pros::E_CONTROLLER_MASTER);
-pros::ADIDigitalOut Piston('A');
+pros::ADIDigitalOut Piston(PISTON_PORT);
+
 #define BUTTON(x) if (master.get_digital_new_press(x))
+
 #define HELD(x) if (master.get_digital(x))
-pros::Motor left_mtr(1, true);
-pros::Motor right_mtr(2);
+
+pros::Motor left_mtr(LEFT_MTR_PORT, true);
+pros::Motor right_mtr(RIGHT_MTR_PORT);
 
 bool isDevelopment = false;
 bool isProd = false;
@@ -93,7 +96,7 @@ void autonomous() {
    * @note Example img of field used for this code.
    * * URL https://content.vexrobotics.com/images/CompetitionV2/SpinUpField.jpg
    */
-  moveIntake(Intake);
+  moveIntake(Intake1, Intake2, Intake3);
   left_mtr = 127;
   right_mtr = 127;
   pros::delay(1000);
@@ -115,7 +118,7 @@ void autonomous() {
   pros::delay(1500);
   left_mtr.brake();
   right_mtr.brake();
-  stopIntake(Intake);
+  stopIntake(Intake1, Intake2, Intake3);
 }
 
 /**
@@ -144,7 +147,7 @@ void opcontrol() {
     right_mtr = right;
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
       // Toggle pneumatics or other similar actions
-      runPuncher(PUNCHER);
+      runPuncher(Puncher);
     } else {
     }
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
@@ -156,9 +159,9 @@ void opcontrol() {
       autonomous();
     }
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-      moveIntake(Intake);
+      moveIntake(Intake1, Intake2, Intake3);
     } else {
-      stopIntake(Intake);
+      stopIntake(Intake1, Intake2, Intake3);
     }
     pros::delay(20);
   }
