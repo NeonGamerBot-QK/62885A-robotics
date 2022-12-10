@@ -22,6 +22,11 @@ pros make
 pros make
 ```
 
+## Screenshots of the code
+
+  <img src="assets/autonomous.png">
+  <img src="assets/buttonpress.png">
+  <img src="assets/controls.png">
 ## Developer
 
 👤 **Saahil**
@@ -36,6 +41,10 @@ pros make
 ## Show your support
 
 Give a ⭐️ if this project helped you!
+
+## Pros Config (Long)
+
+  <img src="assets/prosconfig.png">
 
 <!-- ***
 _This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_ -->

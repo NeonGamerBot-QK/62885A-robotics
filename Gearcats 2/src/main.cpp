@@ -9,6 +9,7 @@
 #include "other.h"
 #include "pros/adi.h"
 #include "pros/adi.hpp"
+#include "pros/misc.h"
 #include "pros/rtos.hpp"
 
 // * define the motor ports here
@@ -139,11 +140,6 @@ void opcontrol() {
                      LCD_BTN_CENTER);
     int left = master.get_analog(ANALOG_LEFT_Y);
     int right = master.get_analog(ANALOG_RIGHT_Y);
-    // LCDButtonPress(pros::lcd::read_buttons(), isDevelopment, isProd);
-    // if(!isDevelopment && !isProd) {
-    // // pros::delay(20);
-    // 	return;
-    // } else if (isProd && !isDevelopment) {
     left_mtr = left;
     right_mtr = right;
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
@@ -159,9 +155,11 @@ void opcontrol() {
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X)) {
       autonomous();
     }
-    // } else if(isDevelopment && !isProd) {
-    // 	//dev code here
-    // }
+    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+      moveIntake(Intake);
+    } else {
+      stopIntake(Intake);
+    }
     pros::delay(20);
   }
 }
