@@ -12,23 +12,28 @@
 #include "pros/adi.hpp"
 #include "pros/misc.h"
 #include "pros/rtos.hpp"
-pros::Motor Puncher(PUNCHER_PORT);
-pros::Motor Intake1(INTAKE_PORT1);
-pros::Motor Intake2(INTAKE_PORT2);
-pros::Motor Intake3(INTAKE_PORT3);
+pros::Motor Puncher(PUNCHER_PORT, true);
+// Intake motors
+pros::Motor Intake1(INTAKE_PORT1, true);
+pros::Motor Intake2(INTAKE_PORT2, true);
+pros::Motor Intake3(INTAKE_PORT3, true);
+// Controller
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::ADIDigitalOut Piston(PISTON_PORT);
 
-#define BUTTON(x) if (master.get_digital_new_press(x))
-
-#define HELD(x) if (master.get_digital(x))
-
-pros::Motor left_mtr(LEFT_MTR_PORT, true);
-pros::Motor right_mtr(RIGHT_MTR_PORT);
-
+pros::Motor left_mtr1(DRIVE_TRAIN_WHEEL_1_PORT);
+pros::Motor left_mtr2(DRIVE_TRAIN_WHEEL_2_PORT);
+pros::Motor right_mtr1(DRIVE_TRAIN_WHEEL_3_PORT, true);
+pros::Motor right_mtr2(DRIVE_TRAIN_WHEEL_4_PORT, true);
+pros::Motor middle_mtr(DRIVE_TRAIN_WHEEL_5_PORT);
 bool isDevelopment = false;
 bool isProd = false;
 
+// utils
+double mapValue(double value, double istart, double istop, double ostart,
+                double ostop) {
+  return ostart + (ostop - ostart) * ((value - istart) / istop - istart);
+}
 /**
  * * A callback function for LLEMU's center button.
  *
@@ -96,29 +101,6 @@ void autonomous() {
    * @note Example img of field used for this code.
    * * URL https://content.vexrobotics.com/images/CompetitionV2/SpinUpField.jpg
    */
-  moveIntake(Intake1, Intake2, Intake3);
-  left_mtr = 127;
-  right_mtr = 127;
-  pros::delay(1000);
-  left_mtr.brake();
-  right_mtr.brake();
-  left_mtr = 120;
-  pros::delay(200);
-  left_mtr.brake();
-  left_mtr = 127;
-  right_mtr = 127;
-  pros::delay(1500);
-  left_mtr.brake();
-  right_mtr.brake();
-  left_mtr = 120;
-  pros::delay(500);
-  left_mtr.brake();
-  left_mtr = 127;
-  right_mtr = 127;
-  pros::delay(1500);
-  left_mtr.brake();
-  right_mtr.brake();
-  stopIntake(Intake1, Intake2, Intake3);
 }
 
 /**
@@ -143,12 +125,15 @@ void opcontrol() {
                      LCD_BTN_CENTER);
     int left = master.get_analog(ANALOG_LEFT_Y);
     int right = master.get_analog(ANALOG_RIGHT_Y);
-    left_mtr = left;
-    right_mtr = right;
+    // Move the drivetrain
+
+    // left_mtr.move_velocity
+
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
       // Toggle pneumatics or other similar actions
       runPuncher(Puncher);
     } else {
+      Puncher.brake();
     }
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
       ButtonBPress(Piston);
