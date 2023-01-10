@@ -80,7 +80,6 @@ void opcontrol() {
   pros::Motor left_mtr(DRIVETRIAN_UL, true);
   pros::Motor right_mtr(DRIVETRIAN_UR);
   pros::Motor right_mtr2(DRIVETRIAN_DR);
-  pros::Motor middle_mtr(DRIVETRAIN_M);
 
   while (true) {
     pros::lcd::print(0, "%d %d %d",
@@ -95,12 +94,11 @@ void opcontrol() {
     left_mtr2 = left;
     right_mtr2 = right;
     right_mtr = right;
-    middle_mtr = middle;
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-      onButtonPressA(middle_mtr);
+      // onButtonPressA(middle_mtr);
     } else {
 
-      middle_mtr.brake();
+      // middle_mtr.brake();
     }
     pros::delay(20);
   }
