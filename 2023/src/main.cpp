@@ -1,6 +1,7 @@
 #include "main.h"
 #include "Buttons.h"
 #include "config.cpp"
+#include "flywheel.h"
 
 /**
  * A callback function for LLEMU's center button.
