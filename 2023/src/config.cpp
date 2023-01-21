@@ -2,3 +2,5 @@
 #define DRIVETRIAN_UR 2
 #define DRIVETRIAN_DL 3
 #define DRIVETRIAN_DR 4
+
+#define INTAKE_MOTOR 10

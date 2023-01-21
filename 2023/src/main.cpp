@@ -2,6 +2,7 @@
 #include "Buttons.h"
 #include "config.cpp"
 #include "flywheel.h"
+#include "intake.h"
 
 /**
  * A callback function for LLEMU's center button.
@@ -81,6 +82,7 @@ void opcontrol() {
   pros::Motor left_mtr(DRIVETRIAN_UL, true);
   pros::Motor right_mtr(DRIVETRIAN_UR);
   pros::Motor right_mtr2(DRIVETRIAN_DR);
+  pros::Motor intakeMotor(INTAKE_MOTOR);
 
   while (true) {
     pros::lcd::print(0, "%d %d %d",
@@ -89,16 +91,16 @@ void opcontrol() {
                      (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
     int left = master.get_analog(ANALOG_LEFT_Y);
     int right = master.get_analog(ANALOG_RIGHT_Y);
-    int middle = master.get_analog(ANALOG_LEFT_X);
 
-    left_mtr = left;
+    left_mtr = -left;
     left_mtr2 = left;
     right_mtr2 = right;
-    right_mtr = right;
+    right_mtr = -right;
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
       // onButtonPressA(middle_mtr);
+      IntakeMove(intakeMotor);
     } else {
-
+      IntakeStop(intakeMotor);
       // middle_mtr.brake();
     }
     pros::delay(20);
