@@ -1,25 +1,18 @@
 #include "main.h"
-#include "Buttons.h"
+#include "Functions.h"
+#include "Roller.h"
 #include "config.cpp"
 #include "flywheel.h"
 #include "intake.h"
-
-/**
- * A callback function for LLEMU's center button.
- *
- * When this callback is fired, it will toggle line 2 of the LCD text between
- * "I was pressed!" and nothing.
- */
-void on_center_button() {
-  static bool pressed = false;
-  pressed = !pressed;
-  if (pressed) {
-    pros::lcd::set_text(2, "I was pressed!");
-  } else {
-    pros::lcd::clear_line(2);
-  }
-}
-
+// Motor definitions
+pros::Motor left_mtr2(DRIVETRIAN_DL, true);
+pros::Motor left_mtr(DRIVETRIAN_UL, true);
+pros::Motor right_mtr(DRIVETRIAN_UR);
+pros::Motor right_mtr2(DRIVETRIAN_DR);
+pros::Motor intakeMotor3(INTAKE_MOTOR3);
+pros::Motor intakeMotor2(INTAKE_MOTOR2);
+pros::Motor intakeMotor(INTAKE_MOTOR);
+pros::Motor roller(ROLLER_MOTOR);
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -28,8 +21,8 @@ void on_center_button() {
  */
 void initialize() {
   pros::lcd::initialize();
-  pros::lcd::set_text(1, "Hello PROS User!");
-  pros::lcd::register_btn1_cb(on_center_button);
+  // pros::lcd::set_text(1, "Hello PROS User!");
+  // pros::lcd::register_btn1_cb(on_center_button);
 }
 
 /**
@@ -61,12 +54,28 @@ void competition_initialize() { pros::lcd::set_text(1, "[i] Init"); }
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() { pros::lcd::set_text(1, "[i] autonomous"); }
+void DriveForwardFor(int time) {
+  left_mtr = 127;
+  right_mtr = 127;
+  pros::delay(time);
+  left_mtr.brake();
+  right_mtr.brake();
+}
+void BrakeDrivetrain() {
+  left_mtr2.brake();
+  right_mtr2.brake();
+  left_mtr.brake();
+  right_mtr.brake();
+}
+void autonomous() {
+  pros::lcd::set_text(1, "[i] autonomous");
+  DriveForwardFor(2000);
+}
 
 /**
- * Runs the operator control code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the operator
+ * * Runs the operator control code. This function will be started in its own
+ * task with the default priority and stack size whenever the robot is enabled
+ * via the Field Management System or the VEX Competition Switch in the operator
  * control mode.
  *
  * If no competition control is connected, this function will run immediately
@@ -78,17 +87,10 @@ void autonomous() { pros::lcd::set_text(1, "[i] autonomous"); }
  */
 void opcontrol() {
   pros::Controller master(pros::E_CONTROLLER_MASTER);
-  pros::Motor left_mtr2(DRIVETRIAN_DL, true);
-  pros::Motor left_mtr(DRIVETRIAN_UL, true);
-  pros::Motor right_mtr(DRIVETRIAN_UR);
-  pros::Motor right_mtr2(DRIVETRIAN_DR);
-  pros::Motor intakeMotor(INTAKE_MOTOR);
+
+  pros::lcd::set_text(1, "[i] op countrol");
 
   while (true) {
-    pros::lcd::print(0, "%d %d %d",
-                     (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-                     (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-                     (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
     int left = master.get_analog(ANALOG_LEFT_Y);
     int right = master.get_analog(ANALOG_RIGHT_Y);
 
@@ -96,13 +98,24 @@ void opcontrol() {
     left_mtr2 = left;
     right_mtr2 = right;
     right_mtr = -right;
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-      // onButtonPressA(middle_mtr);
-      IntakeMove(intakeMotor);
-    } else {
-      IntakeStop(intakeMotor);
-      // middle_mtr.brake();
-    }
+    // Handle Button
+    ButtonsPressHandle(master, intakeMotor, intakeMotor2, intakeMotor3, roller);
+
+    // if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
+    //   IntakeMove(intakeMotor, intakeMotor2, intakeMotor3);
+    // } else {
+    //   IntakeStop(intakeMotor, intakeMotor2, intakeMotor3);
+    // }
+    // if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+    //   RollerMove(roller, false);
+    // } else {
+    //   RollerStopp(roller);
+    // }
+    // if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+    //   RollerMove(roller, true);
+    // } else {
+    //   RollerStopp(roller);
+    // }
     pros::delay(20);
   }
 }

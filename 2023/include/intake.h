@@ -1,4 +1,4 @@
 
 #include "main.h"
-void IntakeMove(pros::Motor mtr);
-void IntakeStop(pros::Motor mtr);
+void IntakeMove(pros::Motor mtr, pros::Motor mtr2, pros::Motor mtr3);
+void IntakeStop(pros::Motor mtr, pros::Motor mtr2, pros::Motor mtr3);
