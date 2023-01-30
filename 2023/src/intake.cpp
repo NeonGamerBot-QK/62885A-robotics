@@ -1,7 +1,7 @@
 
 #include "main.h"
 void IntakeMove(pros::Motor mtr, pros::Motor mtr2, pros::Motor mtr3) {
-  mtr = -127;
+  mtr = 127;
   mtr3 = 127;
   mtr2 = -127;
 }
