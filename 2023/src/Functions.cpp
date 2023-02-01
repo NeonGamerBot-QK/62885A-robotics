@@ -11,6 +11,14 @@ void ButtonACb(pros::Controller master, pros::Motor intakeMotor,
     IntakeStop(intakeMotor, intakeMotor2, intakeMotor3);
   }
 }
+void ButtonBCb(pros::Controller master, pros::Motor intakeMotor,
+               pros::Motor intakeMotor2, pros::Motor intakeMotor3) {
+  if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
+    IntakeReverse(intakeMotor, intakeMotor2, intakeMotor3);
+  } else {
+    IntakeStop(intakeMotor, intakeMotor2, intakeMotor3);
+  }
+}
 void ButtonR1press(pros::Controller master, pros::Motor roller) {
   if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
     RollerMove(roller, false);
@@ -29,6 +37,7 @@ void ButtonsPressHandle(pros::Controller master, pros::Motor intakeMotor,
                         pros::Motor intakeMotor2, pros::Motor intakeMotor3,
                         pros::Motor roller) {
   ButtonACb(master, intakeMotor, intakeMotor2, intakeMotor3);
+  ButtonBCb(master, intakeMotor, intakeMotor2, intakeMotor3);
   ButtonR1press(master, roller);
   ButtonL1press(master, roller);
 }
