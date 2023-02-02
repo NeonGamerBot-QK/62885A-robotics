@@ -167,7 +167,8 @@
       }
     },
     "upload_options": {
-      "icon": "X"
+      "icon": "X",
+      "description": "elliot destroying simulator"
     }
   }
 }

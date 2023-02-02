@@ -4,7 +4,6 @@
 #define DRIVETRIAN_DR 4
 
 #define INTAKE_MOTOR 10
-#define INTAKE_MOTOR2 14
-#define INTAKE_MOTOR3 15
+#define PUNCHER_PORT 14
 
 #define ROLLER_MOTOR 11

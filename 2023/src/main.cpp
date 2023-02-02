@@ -6,12 +6,11 @@
 #include "intake.h"
 // Motor definitions
 pros::Motor left_mtr2(DRIVETRIAN_DL, true);
-pros::Motor left_mtr(DRIVETRIAN_UL, true);
+pros::Motor left_mtr(DRIVETRIAN_DR, true);
 pros::Motor right_mtr(DRIVETRIAN_UR);
-pros::Motor right_mtr2(DRIVETRIAN_DR);
-pros::Motor intakeMotor3(INTAKE_MOTOR3);
-pros::Motor intakeMotor2(INTAKE_MOTOR2);
+pros::Motor right_mtr2(DRIVETRIAN_UL);
 pros::Motor intakeMotor(INTAKE_MOTOR);
+pros::Motor puncher(PUNCHER_PORT);
 pros::Motor roller(ROLLER_MOTOR);
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -99,7 +98,7 @@ void opcontrol() {
     right_mtr2 = right;
     right_mtr = -right;
     // Handle Button
-    ButtonsPressHandle(master, intakeMotor, intakeMotor2, intakeMotor3, roller);
+    ButtonsPressHandle(master, intakeMotor, puncher, roller);
 
     // if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
     //   IntakeMove(intakeMotor, intakeMotor2, intakeMotor3);

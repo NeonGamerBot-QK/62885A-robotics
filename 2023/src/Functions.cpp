@@ -1,22 +1,29 @@
+#include "Puncher.h"
 #include "Roller.h"
 #include "config.cpp"
 #include "flywheel.h"
 #include "intake.h"
 #include "main.h"
-void ButtonACb(pros::Controller master, pros::Motor intakeMotor,
-               pros::Motor intakeMotor2, pros::Motor intakeMotor3) {
+
+void ButtonACb(pros::Controller master, pros::Motor intakeMotor) {
   if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-    IntakeMove(intakeMotor, intakeMotor2, intakeMotor3);
+    IntakeMove(intakeMotor);
   } else {
-    IntakeStop(intakeMotor, intakeMotor2, intakeMotor3);
+    IntakeStop(intakeMotor);
   }
 }
-void ButtonBCb(pros::Controller master, pros::Motor intakeMotor,
-               pros::Motor intakeMotor2, pros::Motor intakeMotor3) {
+void ButtonBCb(pros::Controller master, pros::Motor intakeMotor) {
   if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
-    IntakeReverse(intakeMotor, intakeMotor2, intakeMotor3);
+    IntakeReverse(intakeMotor);
   } else {
-    IntakeStop(intakeMotor, intakeMotor2, intakeMotor3);
+    IntakeStop(intakeMotor);
+  }
+}
+void ButtonXpress(pros::Controller master, pros::Motor roller) {
+  if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X)) {
+    PuncherMove(roller, false);
+  } else {
+    PuncherStopp(roller);
   }
 }
 void ButtonR1press(pros::Controller master, pros::Motor roller) {
@@ -34,10 +41,10 @@ void ButtonL1press(pros::Controller master, pros::Motor roller) {
   }
 }
 void ButtonsPressHandle(pros::Controller master, pros::Motor intakeMotor,
-                        pros::Motor intakeMotor2, pros::Motor intakeMotor3,
-                        pros::Motor roller) {
-  ButtonACb(master, intakeMotor, intakeMotor2, intakeMotor3);
-  ButtonBCb(master, intakeMotor, intakeMotor2, intakeMotor3);
+                        pros::Motor puncher, pros::Motor roller) {
+  ButtonACb(master, intakeMotor);
+  ButtonBCb(master, intakeMotor);
   ButtonR1press(master, roller);
   ButtonL1press(master, roller);
+  ButtonXpress(master, puncher);
 }
