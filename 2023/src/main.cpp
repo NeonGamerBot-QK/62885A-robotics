@@ -20,7 +20,7 @@ pros::Motor roller(ROLLER_MOTOR);
  */
 void initialize() {
   pros::lcd::initialize();
-  // pros::lcd::set_text(1, "Hello PROS User!");
+  pros::lcd::set_text(1, "[i] Init");
   // pros::lcd::register_btn1_cb(on_center_button);
 }
 
@@ -40,7 +40,7 @@ void disabled() { pros::lcd::set_text(1, "[i] Disabled"); }
  * This task will exit when the robot is enabled and autonomous or opcontrol
  * starts.
  */
-void competition_initialize() { pros::lcd::set_text(1, "[i] Init"); }
+void competition_initialize() { pros::lcd::set_text(1, "[i] Comp Init"); }
 
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -66,9 +66,24 @@ void BrakeDrivetrain() {
   left_mtr.brake();
   right_mtr.brake();
 }
+// * true = right
+// * false = left
+void Turn(bool direction) {
+  if (direction) {
+    left_mtr2 = 127;
+    right_mtr2 = 127;
+  } else {
+    left_mtr2 = -127;
+    right_mtr2 = -127;
+  }
+  pros::delay(1000);
+  left_mtr2.brake();
+  right_mtr2.brake();
+}
 void autonomous() {
   pros::lcd::set_text(1, "[i] autonomous");
   DriveForwardFor(2000);
+  Turn(true);
 }
 
 /**
@@ -87,7 +102,7 @@ void autonomous() {
 void opcontrol() {
   pros::Controller master(pros::E_CONTROLLER_MASTER);
 
-  pros::lcd::set_text(1, "[i] op countrol");
+  pros::lcd::set_text(1, "[i] op control");
 
   while (true) {
     int left = master.get_analog(ANALOG_LEFT_Y);

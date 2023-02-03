@@ -42,7 +42,10 @@ void ButtonL1press(pros::Controller master, pros::Motor roller) {
 }
 void ButtonsPressHandle(pros::Controller master, pros::Motor intakeMotor,
                         pros::Motor puncher, pros::Motor roller) {
-  ButtonACb(master, intakeMotor);
+  if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A) &&
+      master.get_digital(pros::E_CONTROLLER_DIGITAL_B))
+
+    ButtonACb(master, intakeMotor);
   ButtonBCb(master, intakeMotor);
   ButtonR1press(master, roller);
   ButtonL1press(master, roller);
