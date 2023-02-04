@@ -7,3 +7,4 @@
 #define PUNCHER_PORT 14
 
 #define ROLLER_MOTOR 11
+#define ENDGAME_PORT 15

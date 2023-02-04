@@ -12,6 +12,7 @@ pros::Motor right_mtr2(DRIVETRIAN_UL);
 pros::Motor intakeMotor(INTAKE_MOTOR);
 pros::Motor puncher(PUNCHER_PORT);
 pros::Motor roller(ROLLER_MOTOR);
+pros::Motor endgame(ENDGAME_PORT);
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *

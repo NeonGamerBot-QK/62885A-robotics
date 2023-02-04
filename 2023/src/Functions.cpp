@@ -21,7 +21,7 @@ void ButtonBCb(pros::Controller master, pros::Motor intakeMotor) {
 }
 void ButtonXpress(pros::Controller master, pros::Motor roller) {
   if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X)) {
-    PuncherMove(roller, false);
+    PuncherMove(roller);
   } else {
     PuncherStopp(roller);
   }
@@ -40,10 +40,19 @@ void ButtonL1press(pros::Controller master, pros::Motor roller) {
     RollerStopp(roller);
   }
 }
+void ButtonYpress(pros::Controller madter, pros::Motor mtr) {
+  if(master.get_digital(pross::E_CONTROLLER_DIGITAL_Y)) {
+    mtr = 127;
+  } else {
+    mtr.brake()
+  }
+}
 void ButtonsPressHandle(pros::Controller master, pros::Motor intakeMotor,
-                        pros::Motor puncher, pros::Motor roller) {
+                        pros::Motor puncher, pros::Motor roller, pros::Motor endgame) {
   if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A) &&
-      master.get_digital(pros::E_CONTROLLER_DIGITAL_B))
+      master.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
+
+      }
 
     ButtonACb(master, intakeMotor);
   ButtonBCb(master, intakeMotor);
