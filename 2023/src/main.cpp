@@ -15,7 +15,6 @@ pros::Motor roller(ROLLER_MOTOR);
 pros::Motor endgame(ENDGAME_PORT);
 /**
  * Runs initialization code. This occurs as soon as the program is started.
- *
  * All other competition modes are blocked by initialize; it is recommended
  * to keep execution time for this mode under a few seconds.
  */
@@ -55,11 +54,11 @@ void competition_initialize() { pros::lcd::set_text(1, "[i] Comp Init"); }
  * from where it left off.
  */
 void DriveForwardFor(int time) {
-  left_mtr = 127;
-  right_mtr = 127;
+  left_mtr2 = 127;
+  right_mtr2 = 127;
   pros::delay(time);
-  left_mtr.brake();
-  right_mtr.brake();
+  left_mtr2.brake();
+  right_mtr2.brake();
 }
 void BrakeDrivetrain() {
   left_mtr2.brake();
@@ -71,20 +70,30 @@ void BrakeDrivetrain() {
 // * false = left
 void Turn(bool direction) {
   if (direction) {
-    left_mtr2 = 127;
-    right_mtr2 = 127;
+    left_mtr = 127;
+    right_mtr = 127;
   } else {
-    left_mtr2 = -127;
-    right_mtr2 = -127;
+    left_mtr = -127;
+    right_mtr = -127;
   }
   pros::delay(1000);
-  left_mtr2.brake();
-  right_mtr2.brake();
+  left_mtr.brake();
+  right_mtr.brake();
 }
 void autonomous() {
   pros::lcd::set_text(1, "[i] autonomous");
   DriveForwardFor(2000);
   Turn(true);
+  DriveForwardFor(2000);
+  Turn(true);
+  DriveForwardFor(2000);
+  Turn(true);
+  DriveForwardFor(2000);
+  Turn(true);
+  DriveForwardFor(2000);
+  Turn(true);
+  DriveForwardFor(2000);
+  BrakeDrivetrain();
 }
 
 /**
