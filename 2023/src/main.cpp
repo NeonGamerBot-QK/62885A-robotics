@@ -114,7 +114,7 @@ void opcontrol() {
     right_mtr2 = right;
     right_mtr = -right;
     // Handle Button
-    ButtonsPressHandle(master, intakeMotor, puncher, roller);
+    ButtonsPressHandle(master, intakeMotor, puncher, roller, endgame);
 
     // if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
     //   IntakeMove(intakeMotor, intakeMotor2, intakeMotor3);
