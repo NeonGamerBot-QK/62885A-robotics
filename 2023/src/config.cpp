@@ -1,3 +1,7 @@
+/**
+ * UL = Upper Left
+ * (P)(D)
+ */
 #define DRIVETRIAN_UL 1
 #define DRIVETRIAN_UR 2
 #define DRIVETRIAN_DL 3
