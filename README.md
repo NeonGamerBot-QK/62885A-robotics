@@ -34,6 +34,6 @@ Contains all the button functions for the robot which also includes all of the R
 
 Contains the code related to the intake motors and functions.
 
-### `src/core/config.cpp`
+### `src/config.cpp`
 
 Contains all the configuration for ports.
