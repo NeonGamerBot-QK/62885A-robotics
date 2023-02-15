@@ -52,9 +52,6 @@ void ButtonYpress(pros::Controller master, pros::Motor mtr) {
 void ButtonsPressHandle(pros::Controller master, pros::Motor intakeMotor,
                         pros::Motor puncher, pros::Motor roller,
                         pros::Motor endgame) {
-  if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A) &&
-      master.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
-  }
 
   ButtonACb(master, intakeMotor);
   ButtonBCb(master, intakeMotor);

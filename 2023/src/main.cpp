@@ -117,11 +117,23 @@ void opcontrol() {
   while (true) {
     int left = master.get_analog(ANALOG_LEFT_Y);
     int right = master.get_analog(ANALOG_RIGHT_Y);
-
-    left_mtr = -left;
-    left_mtr2 = left;
-    right_mtr2 = right;
-    right_mtr = -right;
+    if (left > 0 && right > 0) {
+      left_mtr = -left * 2;
+      left_mtr2 = -left * 2;
+      right_mtr2 = -right * 2;
+      right_mtr = -right * 2;
+    } else if (left < 0 && right < 0) {
+      left_mtr = left * 2;
+      left_mtr2 = left * 2;
+      right_mtr2 = right * 2;
+      right_mtr = right * 2;
+    }
+    if (left == 0 || right == 0) {
+      left_mtr = 0;
+      left_mtr2 = 0;
+      right_mtr2 = 0;
+      right_mtr = 0;
+    }
     // Handle Button
     ButtonsPressHandle(master, intakeMotor, puncher, roller, endgame);
 
