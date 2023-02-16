@@ -4,6 +4,7 @@
 #include "config.cpp"
 #include "flywheel.h"
 #include "intake.h"
+#include "pros/llemu.hpp"
 // Motor definitions
 pros::Motor left_mtr2(DRIVETRIAN_DL, true);
 pros::Motor left_mtr(DRIVETRIAN_DR, true);
@@ -13,6 +14,15 @@ pros::Motor intakeMotor(INTAKE_MOTOR);
 pros::Motor puncher(PUNCHER_PORT);
 pros::Motor roller(ROLLER_MOTOR);
 pros::Motor endgame(ENDGAME_PORT);
+bool side = false;
+void toggle_side() {
+  side = !side;
+  if (side) {
+    pros::lcd::set_text(2, "Side: RED!");
+  } else {
+    pros::lcd::set_text(2, "Side: BLUE!");
+  }
+}
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  * All other competition modes are blocked by initialize; it is recommended
@@ -21,9 +31,9 @@ pros::Motor endgame(ENDGAME_PORT);
 void initialize() {
   pros::lcd::initialize();
   pros::lcd::set_text(1, "[i] Init");
+  pros::lcd::register_btn1_cb(toggle_side);
   // pros::lcd::register_btn1_cb(on_center_button);
 }
-
 /**
  * Runs while the robot is in the disabled state of Field Management System or
  * the VEX Competition Switch, following either autonomous or opcontrol. When
@@ -53,19 +63,22 @@ void competition_initialize() { pros::lcd::set_text(1, "[i] Comp Init"); }
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void DriveForwardFor(int time) {
-  left_mtr2 = 127;
-  right_mtr2 = 127;
-  pros::delay(time);
-  left_mtr2.brake();
-  right_mtr2.brake();
-}
 void BrakeDrivetrain() {
   left_mtr2.brake();
   right_mtr2.brake();
   left_mtr.brake();
   right_mtr.brake();
 }
+
+void DriveForwardFor(int time) {
+  left_mtr = -127;
+  left_mtr2 = 127;
+  right_mtr2 = -127;
+  right_mtr = 127;
+  pros::delay(time);
+  BrakeDrivetrain();
+}
+
 // * true = right
 // * false = left
 void Turn(bool direction) {
@@ -81,19 +94,16 @@ void Turn(bool direction) {
   right_mtr.brake();
 }
 void autonomous() {
-  pros::lcd::set_text(1, "[i] autonomous");
-  DriveForwardFor(2000);
-  Turn(true);
-  DriveForwardFor(2000);
-  Turn(true);
-  DriveForwardFor(2000);
-  Turn(true);
-  DriveForwardFor(2000);
-  Turn(true);
-  DriveForwardFor(2000);
-  Turn(true);
-  DriveForwardFor(2000);
+  if (side) {
+    pros::lcd::set_text(1, "[i] autonomous red");
+  } else {
+    pros::lcd::set_text(1, "[i] autonomous blue");
+  }
+  IntakeMove(intakeMotor);
+  DriveForwardFor(2500);
+  // Turn(true);
   BrakeDrivetrain();
+  IntakeStop(intakeMotor);
 }
 
 /**
@@ -115,24 +125,19 @@ void opcontrol() {
   pros::lcd::set_text(1, "[i] op control");
 
   while (true) {
-    int left = master.get_analog(ANALOG_LEFT_Y);
-    int right = master.get_analog(ANALOG_RIGHT_Y);
-    if (left > 0 && right > 0) {
-      left_mtr = -left * 2;
-      left_mtr2 = -left * 2;
-      right_mtr2 = -right * 2;
-      right_mtr = -right * 2;
-    } else if (left < 0 && right < 0) {
-      left_mtr = left * 2;
-      left_mtr2 = left * 2;
-      right_mtr2 = right * 2;
-      right_mtr = right * 2;
-    }
-    if (left == 0 || right == 0) {
-      left_mtr = 0;
-      left_mtr2 = 0;
-      right_mtr2 = 0;
-      right_mtr = 0;
+    int left = master.get_analog(ANALOG_LEFT_Y) * 2;
+    int right = master.get_analog(ANALOG_RIGHT_Y) * 2;
+
+    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+      left_mtr = -left;
+      left_mtr2 = -left;
+      right_mtr2 = right;
+      right_mtr = right;
+    } else {
+      left_mtr = -left;
+      left_mtr2 = left;
+      right_mtr2 = -right;
+      right_mtr = right;
     }
     // Handle Button
     ButtonsPressHandle(master, intakeMotor, puncher, roller, endgame);
@@ -152,6 +157,6 @@ void opcontrol() {
     // } else {
     //   RollerStopp(roller);
     // }
-    pros::delay(20);
+    pros::delay(15);
   }
 }
