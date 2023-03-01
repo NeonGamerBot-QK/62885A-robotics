@@ -4,6 +4,8 @@
 #include "config.cpp"
 #include "flywheel.h"
 #include "intake.h"
+#include "okapi/api/device/motor/abstractMotor.hpp"
+#include "okapi/impl/chassis/controller/chassisControllerBuilder.hpp"
 #include "pros/llemu.hpp"
 // Motor definitions
 pros::Motor left_mtr2(DRIVETRIAN_DL, true);
@@ -14,6 +16,19 @@ pros::Motor intakeMotor(INTAKE_MOTOR);
 pros::Motor puncher(PUNCHER_PORT);
 pros::Motor roller(ROLLER_MOTOR);
 pros::Motor endgame(ENDGAME_PORT);
+
+using namespace okapi;
+
+std::shared_ptr<okapi::ChassisController> chassis =
+    okapi::ChassisControllerBuilder()
+        .withMotors(DRIVETRIAN_DR, -DRIVETRIAN_DL, -DRIVETRIAN_UR,
+                    DRIVETRIAN_UL)
+        .withDimensions(okapi::AbstractMotor::gearset::green,
+                        {{4_in, 6_in}, imev5GreenTPR})
+        .build();
+
+std::shared_ptr<okapi::XDriveModel> model =
+    std::static_pointer_cast<okapi::XDriveModel>(chassis->getModel());
 bool side = false;
 void toggle_side() {
   side = !side;
@@ -23,6 +38,12 @@ void toggle_side() {
     pros::lcd::set_text(2, "Side: BLUE!");
   }
 }
+
+double mapValue(double value, double istart, double istop, double ostart,
+                double ostop) {
+  return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+}
+
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  * All other competition modes are blocked by initialize; it is recommended
@@ -125,20 +146,31 @@ void opcontrol() {
   pros::lcd::set_text(1, "[i] op control");
 
   while (true) {
-    int left = master.get_analog(ANALOG_LEFT_Y) * 2;
-    int right = master.get_analog(ANALOG_RIGHT_Y) * 2;
+    double irightSpeed = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X);
+    double iforwardSpeed = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+    double irotSpeed = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
 
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)) {
-      left_mtr = -left;
-      left_mtr2 = -left;
-      right_mtr2 = right;
-      right_mtr = right;
-    } else {
-      left_mtr = -left;
-      left_mtr2 = left;
-      right_mtr2 = -right;
-      right_mtr = right;
-    }
+    double rightSpeed = mapValue(irightSpeed, -127, 127, -1, 1);
+    double forwardSpeed = mapValue(iforwardSpeed, -127, 127, -1, 1);
+    double rotationSpeed = mapValue(irotSpeed, -127, 127, -1, 1);
+
+    // model->xArcade(rightSpeed, forwardSpeed, rotationSpeed);
+    model->xArcade(-rotationSpeed, -forwardSpeed, -rightSpeed);
+
+    // int left = master.get_analog(ANALOG_LEFT_Y) * 2;
+    // int right = master.get_analog(ANALOG_RIGHT_Y) * 2;
+
+    // if (master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+    //   left_mtr = -left;
+    //   left_mtr2 = -left;
+    //   right_mtr2 = right;
+    //   right_mtr = right;
+    // } else {
+    //   left_mtr = -left;
+    //   left_mtr2 = left;
+    //   right_mtr2 = -right;
+    //   right_mtr = right;
+    // }
     // Handle Button
     ButtonsPressHandle(master, intakeMotor, puncher, roller, endgame);
 
